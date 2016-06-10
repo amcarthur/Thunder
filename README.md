@@ -12,4 +12,4 @@ Will  eventually fully support x86 and x64 injection.
 7. Add an "auto injection" feature to wait for a specified process to launch.
 8. I'm sure tons more.
 
-This project is not ready or intended for use by anyone at the moment.
+This project is not ready or intended for use by anyone at the moment. If you are looking for a working and mature DLL injector, I suggest checking out [Xenos](https://github.com/DarthTon/Xenos), which is made by the same developer as Blackbone and also uses Blackbone interally.
