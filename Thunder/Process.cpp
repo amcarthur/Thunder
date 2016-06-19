@@ -244,9 +244,9 @@ namespace thunder
 		}
 
 		blackbone::RemoteFunction<fnThunderCLRHostExecute> pfn(*_process, (fnThunderCLRHostExecute)pRemote.procAddress, assemblyPath.c_str(), className.c_str(), methodName.c_str(), argument.c_str());
-		
+
 		int ret = 0;
-		NTSTATUS status = pfn.Call(ret, _process->threads().getMain()); // TODO: This should probably create a new thread
+		NTSTATUS status = pfn.Call(ret);
 	}
 
 	bool Process::FileExists(const filesystem::path& filePath)

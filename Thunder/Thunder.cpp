@@ -329,11 +329,57 @@ void stopClrHandler(const CommandArguments& arguments)
 
 void invokeClrHandler(const CommandArguments& arguments)
 {
-	std::wcout << L"invokeclr called with arguments:" << std::endl;
-	for (const auto& arg : arguments)
+	auto processNameIter = arguments.find(L"-P");
+	auto processIdIter = arguments.find(L"-PID");
+
+	DWORD processId = 0;
+	std::wstring processName = L"";
+	bool useProcessId = false;
+
+	if (processIdIter != arguments.end())
 	{
-		std::wcout << L"\t" << arg.first << L" " << arg.second << std::endl;
+		useProcessId = true;
+		processId = std::stol(processIdIter->second);
 	}
+	else if (processNameIter != arguments.end())
+	{
+		processName = processNameIter->second;
+	}
+	else
+	{
+		throw Exceptions::InvalidSyntaxException();
+	}
+
+	// thunder invokeclr [-P <process name>] [-PID <process id>] -ASS <assembly path> -C <class> -M <method>] [-A <argument>]
+
+	auto assemblyIter = arguments.find(L"-ASS");
+	std::wstring assembly = assemblyIter->second;
+
+	auto classIter = arguments.find(L"-C");
+	std::wstring className = classIter->second;
+
+	auto methodIter = arguments.find(L"-M");
+	std::wstring methodName = methodIter->second;
+	
+	auto argumentIter = arguments.find(L"-A");
+	std::wstring argument = L"";
+	if (argumentIter != arguments.end())
+	{
+		argument = argumentIter->second;
+	}
+
+	Process proc;
+
+	if (useProcessId)
+	{
+		proc.Attach(processId);
+	}
+	else
+	{
+		proc.Attach(processName);
+	}
+
+	proc.ExecuteAssembly(assembly, className, methodName, argument);
 }
 
 int wmain(int argc, wchar_t* argv[])
@@ -397,7 +443,7 @@ int wmain(int argc, wchar_t* argv[])
 	invokeClrOptions.insert(std::make_pair(L"-ASS", true));
 	invokeClrOptions.insert(std::make_pair(L"-C", true));
 	invokeClrOptions.insert(std::make_pair(L"-M", true));
-	invokeClrOptions.insert(std::make_pair(L"-A", true));
+	invokeClrOptions.insert(std::make_pair(L"-A", false));
 	Command invokeClrCommand(L"invokeclr", invokeClrHandler, invokeClrOptions);
 	commandLine.AddCommand(invokeClrCommand);
 
