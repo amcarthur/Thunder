@@ -25,6 +25,7 @@
 
 #include <BlackBone\Process\Process.h>
 #include <BlackBone\Process\RPC\RemoteFunction.hpp>
+#include <BlackBone\PE\ImageNET.h>
 
 #define BLACKBONE_STATIC
 

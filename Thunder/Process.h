@@ -19,8 +19,8 @@ namespace thunder
 		void Resume();
 		void InitializeCLR();
 		void DestroyCLR();
-		void ExecuteAssembly(const filesystem::path& assemblyPath, const std::wstring& className, const std::wstring& methodName, const std::wstring& argument);
-		
+		void ExecuteAssembly(const filesystem::path& assemblyPath, const std::wstring& className, const std::wstring& methodName, const std::wstring& argument = L"");
+	
 		static bool FileExists(const filesystem::path& filePath);
 
 	private:
