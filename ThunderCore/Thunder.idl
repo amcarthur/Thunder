@@ -1,0 +1,64 @@
+import "oaidl.idl";
+import "ocidl.idl";
+
+[object,
+uuid(540F822B-E4EF-4A18-9FA4-344460190D71),
+helpstring("IThunderProcess Interface"),
+pointer_default(unique)
+]
+
+interface IThunderProcess : IUnknown
+{
+	[id(1), helpstring("method AttachById")]
+	HRESULT AttachById([in] DWORD processId);
+
+	[id(2), helpstring("method AttachByName")]
+	HRESULT AttachByName([in] BSTR processName);
+
+	[id(3), helpstring("method CreateAndAttach")]
+	HRESULT CreateAndAttach([in] BSTR exePath, [in, defaultvalue(L"")] BSTR commandLineArguments, [in, defaultvalue(FALSE)] BOOL createSuspended);
+
+	[id(4), helpstring("method Resume")]
+	HRESULT Resume();
+
+	[id(5), helpstring("method Inject")]
+	HRESULT Inject([in] BSTR dllPath, [in, defaultvalue(L"")] BSTR functionName, [in, defaultvalue(L"")] BSTR functionArgument);
+
+	[id(6), helpstring("method ManuallyMap")]
+	HRESULT ManuallyMap([in] BSTR dllPath, [in, defaultvalue(L"")] BSTR functionName, [in, defaultvalue(L"")] BSTR functionArgument);
+
+	[id(7), helpstring("method Eject")]
+	HRESULT Eject([in] BSTR moduleName);
+
+	[id(8), helpstring("method Call")]
+	HRESULT Call([in] BSTR moduleName, [in] BSTR functionName, [in, defaultvalue(FALSE)] BOOL usesArgument, [in, defaultvalue(L"")] BSTR functionArgument);
+
+	[id(9), helpstring("method InitializeCLR")]
+	HRESULT InitializeCLR();
+
+	[id(10), helpstring("method DestroyCLR")]
+	HRESULT DestroyCLR();
+
+	[id(11), helpstring("method ExecuteAssembly")]
+	HRESULT ExecuteAssembly([in] BSTR assemblyPath, [in] BSTR className, [in] BSTR methodName, [in, defaultvalue(L"")] BSTR methodArgument);
+};
+
+[uuid(14E6AFF0-374E-420E-A1DC-8C986B3F412A),
+version(1.0),
+helpstring("Thunder 1.0 Type Library")
+]
+
+library ThunderLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[uuid(86C3EF22-C881-422B-80C7-B45264D0BEC1),
+		helpstring("ThunderCore Class")
+	]
+
+	coclass ThunderCore
+	{
+		[default] interface IThunderProcess;
+	};
+};

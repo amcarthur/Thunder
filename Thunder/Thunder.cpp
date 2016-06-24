@@ -5,21 +5,10 @@
 #include "Command.h"
 #include "CommandLine.h"
 #include "CommandLineExceptions.h"
-#include "ProcessExceptions.h"
 #include "Utils.h"
-#include "Process.h"
+#include "../ThunderCore\ThunderProcess.h"
 
 using namespace thunder;
-
-/*
-thunder inject -D <dll path> [-P <process name>] [-PID <process id>] [-F <function export>] [-A <argument>] [--MM]
-thunder createinject -E <executable path> [-CL <command line arguments>] -D <dll path> [-F <function export>] [-A <argument>] [--MM] [--SUS]
-thunder call [-P <process name>] [-PID <process id>] -M <module name> -F <function export>] [-A <argument>]
-thunder eject [-P <process name>] [-PID <process id>] -M <module name>
-thunder hostclr [-P <process name>] [-PID <process id>]
-thunder stopclr [-P <process name>] [-PID <process id>]
-thunder invokeclr [-P <process name>] [-PID <process id>] -ASS <assembly path> -C <class> -M <method>] [-A <argument>]
-*/
 
 void injectHandler(const CommandArguments& arguments)
 {
@@ -72,24 +61,24 @@ void injectHandler(const CommandArguments& arguments)
 		useManualMap = true;
 	}
 
-	Process proc;
+	ThunderProcess proc;
 
 	if (useProcessId)
 	{
-		proc.Attach(processId);
+		proc.AttachById(processId);
 	}
 	else
 	{
-		proc.Attach(processName);
+		proc.AttachByName(processName.c_str());
 	}
 
 	if (useManualMap)
 	{
-		proc.ManuallyMap(dllPath, functionName, functionArgument);
+		proc.ManuallyMap(dllPath.c_str(), functionName.c_str(), functionArgument.c_str());
 	}
 	else
 	{
-		proc.Inject(dllPath, functionName, functionArgument);
+		proc.Inject(dllPath.c_str(), functionName.c_str(), functionArgument.c_str());
 	}
 }
 
@@ -108,9 +97,9 @@ void createInjectHandler(const CommandArguments& arguments)
 	auto dllArgIter = arguments.find(L"-D");
 	filesystem::path dllPath(dllArgIter->second);
 
-	if (!Process::FileExists(dllPath))
+	if (!ThunderProcess::FileExists(dllPath.c_str()))
 	{
-		throw Exceptions::DllFileNotFoundException();
+		return;
 	}
 
 	auto functionIter = arguments.find(L"-F");
@@ -145,16 +134,16 @@ void createInjectHandler(const CommandArguments& arguments)
 		createSuspended = true;
 	}
 
-	Process proc;
-	Process::CreateAndAttach(proc, exePath, commandLineArgs, createSuspended);
+	ThunderProcess proc;
+	proc.CreateAndAttach(exePath.c_str(), commandLineArgs.c_str(), createSuspended);
 
 	if (useManualMap)
 	{
-		proc.ManuallyMap(dllPath, functionName, functionArgument);
+		proc.ManuallyMap(dllPath.c_str(), functionName.c_str(), functionArgument.c_str());
 	}
 	else
 	{
-		proc.Inject(dllPath, functionName, functionArgument);
+		proc.Inject(dllPath.c_str(), functionName.c_str(), functionArgument.c_str());
 	}
 
 	if (createSuspended)
@@ -199,18 +188,25 @@ void callHandler(const CommandArguments& arguments)
 		functionArgument = functionArgumentIter->second;
 	}
 
-	Process proc;
+	ThunderProcess proc;
 
 	if (useProcessId)
 	{
-		proc.Attach(processId);
+		proc.AttachById(processId);
 	}
 	else
 	{
-		proc.Attach(processName);
+		proc.AttachByName(processName.c_str());
 	}
 
-	proc.Call(moduleName, functionName, functionArgument);
+	if (functionArgument.length() > 0)
+	{
+		proc.Call(moduleName.c_str(), functionName.c_str(), true, functionArgument.c_str());
+	}
+	else
+	{
+		proc.Call(moduleName.c_str(), functionName.c_str());
+	}
 }
 
 void ejectHandler(const CommandArguments& arguments)
@@ -239,18 +235,18 @@ void ejectHandler(const CommandArguments& arguments)
 	auto moduleIter = arguments.find(L"-M");
 	std::wstring moduleName = moduleIter->second;
 
-	Process proc;
+	ThunderProcess proc;
 
 	if (useProcessId)
 	{
-		proc.Attach(processId);
+		proc.AttachById(processId);
 	}
 	else
 	{
-		proc.Attach(processName);
+		proc.AttachByName(processName.c_str());
 	}
 
-	proc.Eject(moduleName);
+	proc.Eject(moduleName.c_str());
 }
 
 void hostClrHandler(const CommandArguments& arguments)
@@ -276,15 +272,15 @@ void hostClrHandler(const CommandArguments& arguments)
 		throw Exceptions::InvalidSyntaxException();
 	}
 
-	Process proc;
+	ThunderProcess proc;
 
 	if (useProcessId)
 	{
-		proc.Attach(processId);
+		proc.AttachById(processId);
 	}
 	else
 	{
-		proc.Attach(processName);
+		proc.AttachByName(processName.c_str());
 	}
 
 	proc.InitializeCLR();
@@ -313,15 +309,15 @@ void stopClrHandler(const CommandArguments& arguments)
 		throw Exceptions::InvalidSyntaxException();
 	}
 
-	Process proc;
+	ThunderProcess proc;
 
 	if (useProcessId)
 	{
-		proc.Attach(processId);
+		proc.AttachById(processId);
 	}
 	else
 	{
-		proc.Attach(processName);
+		proc.AttachByName(processName.c_str());
 	}
 
 	proc.DestroyCLR();
@@ -368,18 +364,18 @@ void invokeClrHandler(const CommandArguments& arguments)
 		argument = argumentIter->second;
 	}
 
-	Process proc;
+	ThunderProcess proc;
 
 	if (useProcessId)
 	{
-		proc.Attach(processId);
+		proc.AttachById(processId);
 	}
 	else
 	{
-		proc.Attach(processName);
+		proc.AttachByName(processName.c_str());
 	}
 
-	proc.ExecuteAssembly(assembly, className, methodName, argument);
+	proc.ExecuteAssembly(assembly.c_str(), className.c_str(), methodName.c_str(), argument.c_str());
 }
 
 int wmain(int argc, wchar_t* argv[])
