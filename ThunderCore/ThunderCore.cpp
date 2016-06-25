@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "ThunderCore.h"
-#include "ThunderCoreFactory.h"
+#include "ThunderProcessFactory.h"
 #include "ThunderProcess.h"
 
 THUNDERCORE_API LPUNKNOWN WINAPI CreateInstance()

@@ -19,7 +19,7 @@ namespace thunder
 		STDMETHOD(Call)(LPCWSTR moduleName, LPCWSTR functionName, BOOL usesArgument = FALSE, LPCWSTR functionArgument = L"") = 0;
 		STDMETHOD(InitializeCLR)() = 0;
 		STDMETHOD(DestroyCLR)() = 0;
-		STDMETHOD(ExecuteAssembly)(LPCWSTR assemblyPath, LPCWSTR className, LPCWSTR methodName, LPCWSTR methodArgument = L"") = 0;
+		STDMETHOD(ExecuteAssembly)(LPCWSTR assemblyPath, LPCWSTR className, LPCWSTR methodName, LPCWSTR methodArgument = L"", DWORD* returnVal = nullptr) = 0;
 	};
 
 	class ThunderProcess : public IThunderProcess, public ISupportErrorInfo
@@ -44,7 +44,7 @@ namespace thunder
 		STDMETHOD(Call)(LPCWSTR moduleName, LPCWSTR functionName, BOOL usesArgument = FALSE, LPCWSTR functionArgument = L"");
 		STDMETHOD(InitializeCLR)();
 		STDMETHOD(DestroyCLR)();
-		STDMETHOD(ExecuteAssembly)(LPCWSTR assemblyPath, LPCWSTR className, LPCWSTR methodName, LPCWSTR methodArgument = L"");
+		STDMETHOD(ExecuteAssembly)(LPCWSTR assemblyPath, LPCWSTR className, LPCWSTR methodName, LPCWSTR methodArgument = L"", DWORD* returnVal = nullptr);
 		
 		static bool FileExists(LPCWSTR filePath);
 

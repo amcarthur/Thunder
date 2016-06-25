@@ -323,6 +323,7 @@ namespace thunder
 	STDMETHODIMP ThunderProcess::InitializeCLR()
 	{
 		auto thunderCLRHostDllPath = filesystem::current_path() / THUNDERCLRHOST_DLL;
+		
 		HRESULT injectResult = Inject(thunderCLRHostDllPath.c_str());
 		if (FAILED(injectResult))
 		{
@@ -343,9 +344,9 @@ namespace thunder
 		return Eject(THUNDERCLRHOST_DLL);
 	}
 
-	STDMETHODIMP ThunderProcess::ExecuteAssembly(LPCWSTR assemblyPath, LPCWSTR className, LPCWSTR methodName, LPCWSTR argument)
+	STDMETHODIMP ThunderProcess::ExecuteAssembly(LPCWSTR assemblyPath, LPCWSTR className, LPCWSTR methodName, LPCWSTR argument, DWORD* returnVal)
 	{
-		typedef int(*fnThunderCLRHostExecute)(const wchar_t* assemblyPath, const wchar_t* className, const wchar_t* methodName, const wchar_t* argument);
+		typedef HRESULT(*fnThunderCLRHostExecute)(const wchar_t* assemblyPath, const wchar_t* className, const wchar_t* methodName, const wchar_t* argument, DWORD* retVal);
 
 		if (!ThunderProcess::FileExists(assemblyPath))
 		{
@@ -366,16 +367,14 @@ namespace thunder
 			return E_FAIL;
 		}
 
-		blackbone::RemoteFunction<fnThunderCLRHostExecute> pfn(*_process, (fnThunderCLRHostExecute)pRemote.procAddress, assemblyPath, className, methodName, argument);
+		blackbone::RemoteFunction<fnThunderCLRHostExecute> pfn(*_process, (fnThunderCLRHostExecute)pRemote.procAddress, assemblyPath, className, methodName, argument, returnVal);
 
-		int ret = 0;
+		HRESULT ret;
 		NTSTATUS status = pfn.Call(ret);
 		if (!NT_SUCCESS(status))
-		{
 			return E_FAIL;
-		}
 
-		return S_OK;
+		return ret;
 	}
 
 	bool ThunderProcess::FileExists(LPCWSTR filePath)

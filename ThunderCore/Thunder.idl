@@ -40,7 +40,7 @@ interface IThunderProcess : IUnknown
 	HRESULT DestroyCLR();
 
 	[id(11), helpstring("method ExecuteAssembly")]
-	HRESULT ExecuteAssembly([in] BSTR assemblyPath, [in] BSTR className, [in] BSTR methodName, [in, defaultvalue(L"")] BSTR methodArgument);
+	HRESULT ExecuteAssembly([in] BSTR assemblyPath, [in] BSTR className, [in] BSTR methodName, [in, defaultvalue(L"")] BSTR methodArgument, [out, defaultvalue(NULL)] DWORD* returnValue);
 };
 
 [uuid(14E6AFF0-374E-420E-A1DC-8C986B3F412A),

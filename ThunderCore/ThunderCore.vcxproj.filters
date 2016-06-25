@@ -30,7 +30,7 @@
     <ClInclude Include="ThunderProcess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ThunderCoreFactory.h">
+    <ClInclude Include="ThunderProcessFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,7 +50,7 @@
     <ClCompile Include="ThunderProcess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ThunderCoreFactory.cpp">
+    <ClCompile Include="ThunderProcessFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

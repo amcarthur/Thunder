@@ -5,10 +5,10 @@ namespace thunder
 	extern ULONG g_lockCount;
 	extern ULONG g_objCount;
 
-	class ThunderCoreFactory : public IClassFactory {
+	class ThunderProcessFactory : public IClassFactory {
 	public:
-		ThunderCoreFactory();
-		virtual ~ThunderCoreFactory();
+		ThunderProcessFactory();
+		virtual ~ThunderProcessFactory();
 
 		HRESULT __stdcall QueryInterface(REFIID riid, void ** ppAny);
 		ULONG __stdcall AddRef();

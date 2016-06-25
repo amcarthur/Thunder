@@ -1,6 +1,5 @@
 #include "stdafx.h"
-#include "ThunderCoreFactory.h"
-#include "ThunderCore.h"
+#include "ThunderProcessFactory.h"
 #include "ThunderProcess.h"
 
 namespace thunder
@@ -8,23 +7,23 @@ namespace thunder
 	ULONG g_lockCount = 0;
 	ULONG g_objCount = 0;
 
-	ThunderCoreFactory::ThunderCoreFactory()
+	ThunderProcessFactory::ThunderProcessFactory()
 	{
 		m_refCount = 0;
 		g_objCount++;
 	}
 
-	ThunderCoreFactory::~ThunderCoreFactory()
+	ThunderProcessFactory::~ThunderProcessFactory()
 	{
 		g_objCount--;
 	}
 
-	ULONG __stdcall ThunderCoreFactory::AddRef()
+	ULONG __stdcall ThunderProcessFactory::AddRef()
 	{
 		return ++m_refCount;
 	}
 
-	ULONG __stdcall ThunderCoreFactory::Release()
+	ULONG __stdcall ThunderProcessFactory::Release()
 	{
 		if (--m_refCount == 0)
 		{
@@ -35,9 +34,8 @@ namespace thunder
 		return m_refCount;
 	}
 
-	HRESULT __stdcall ThunderCoreFactory::QueryInterface(REFIID riid, void ** ppAny)
+	HRESULT __stdcall ThunderProcessFactory::QueryInterface(REFIID riid, void ** ppAny)
 	{
-		// IID_IUnknown is the REFIID of standard interface IUnknown
 		if (riid == IID_IUnknown)
 		{
 			*ppAny = (IUnknown *)this;
@@ -56,7 +54,7 @@ namespace thunder
 		return S_OK;
 	}
 
-	HRESULT __stdcall ThunderCoreFactory::CreateInstance
+	HRESULT __stdcall ThunderProcessFactory::CreateInstance
 		(LPUNKNOWN pUnkOuter, REFIID riid, void ** ppAny)
 	{
 		if (pUnkOuter != NULL)
@@ -70,7 +68,7 @@ namespace thunder
 		return hr;
 	}
 
-	HRESULT __stdcall ThunderCoreFactory::LockServer(BOOL fLock)
+	HRESULT __stdcall ThunderProcessFactory::LockServer(BOOL fLock)
 	{
 		if (fLock)
 			g_lockCount++;

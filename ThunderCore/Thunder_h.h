@@ -4,7 +4,7 @@
 
 
  /* File created by MIDL compiler version 8.00.0603 */
-/* at Thu Jun 23 16:29:55 2016
+/* at Sat Jun 25 09:30:12 2016
  */
 /* Compiler settings for Thunder.idl:
     Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.00.0603 
@@ -128,7 +128,8 @@ EXTERN_C const IID IID_IThunderProcess;
             /* [in] */ BSTR assemblyPath,
             /* [in] */ BSTR className,
             /* [in] */ BSTR methodName,
-            /* [defaultvalue][in] */ BSTR methodArgument = L"") = 0;
+            /* [defaultvalue][in] */ BSTR methodArgument = L"",
+            /* [defaultvalue][out] */ DWORD *returnValue = 0) = 0;
         
     };
     
@@ -202,7 +203,8 @@ EXTERN_C const IID IID_IThunderProcess;
             /* [in] */ BSTR assemblyPath,
             /* [in] */ BSTR className,
             /* [in] */ BSTR methodName,
-            /* [defaultvalue][in] */ BSTR methodArgument);
+            /* [defaultvalue][in] */ BSTR methodArgument,
+            /* [defaultvalue][out] */ DWORD *returnValue);
         
         END_INTERFACE
     } IThunderProcessVtbl;
@@ -257,8 +259,8 @@ EXTERN_C const IID IID_IThunderProcess;
 #define IThunderProcess_DestroyCLR(This)	\
     ( (This)->lpVtbl -> DestroyCLR(This) ) 
 
-#define IThunderProcess_ExecuteAssembly(This,assemblyPath,className,methodName,methodArgument)	\
-    ( (This)->lpVtbl -> ExecuteAssembly(This,assemblyPath,className,methodName,methodArgument) ) 
+#define IThunderProcess_ExecuteAssembly(This,assemblyPath,className,methodName,methodArgument,returnValue)	\
+    ( (This)->lpVtbl -> ExecuteAssembly(This,assemblyPath,className,methodName,methodArgument,returnValue) ) 
 
 #endif /* COBJMACROS */
 
